@@ -110,4 +110,13 @@ WHERE b.Id NOT IN (
 
 --Listar los usuario que prefieren a todas las bandas
 
-SELECT distinct u.* FROM Usuario u
+SELECT distinct u.*, p.conteo FROM Usuario u
+JOIN (
+    SELECT p.UsuarioId, COUNT(*) AS conteo FROM Prefiere p
+    GROUP BY p.UsuarioId
+) AS p ON p.UsuarioId = u.Id
+WHERE conteo = (
+    SELECT MAX(c.conteo) FROM (
+        SELECT COUNT(*) AS Conteo FROM Banda
+    ) AS c
+)
